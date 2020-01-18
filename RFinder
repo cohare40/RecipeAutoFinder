@@ -1,0 +1,24 @@
+import requests
+import urllib.request
+import time
+from bs4 import BeautifulSoup
+import base64
+import json
+
+recipeArr = []
+url = 'https://www.budgetbytes.com/category/recipes/'
+response = requests.get(url)
+
+soup = BeautifulSoup(response.text, "html.parser")
+
+for elem in soup.find_all('div', {"class": "archive-post"}):
+
+    recipeObject = {
+        "recipeTitle": elem.find("h4", attrs={"class": "title"}).text,
+        "recipeImage": elem.img['data-lazy-src']
+    }
+    print(recipeObject)
+    recipeArr.append(recipeObject)
+
+with open('recipeList.json', 'w') as outfile:
+    json.dump(recipeArr, outfile)
